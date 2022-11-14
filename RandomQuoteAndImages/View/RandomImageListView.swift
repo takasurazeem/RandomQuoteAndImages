@@ -12,18 +12,30 @@ struct RandomImageListView: View {
     @StateObject private var viewModel = RandomImageListViewModel()
     
     var body: some View {
-        List(viewModel.randomImages) { randomImage in
-            HStack {
-                randomImage.image.map {
-                    Image(uiImage: $0)
-                        .resizable()
-                        .scaledToFit()
+        NavigationView {
+            List(viewModel.randomImages) { randomImage in
+                HStack {
+                    randomImage.image.map {
+                        Image(uiImage: $0)
+                            .resizable()
+                            .scaledToFit()
+                    }
+                    Text(randomImage.quote)
                 }
-                Text(randomImage.quote)
             }
-        }
-        .task {
-            await viewModel.getRandomImages(ids: Array(100...120))
+            .task {
+                await viewModel.getRandomImages(ids: Array(100...120))
+            }
+            .toolbar {
+                Button {
+                    Task {
+                        await viewModel.getRandomImages(ids: Array(100...120))
+                    }
+                } label: {
+                    Image(systemName: "arrow.clockwise.circle")
+                }
+            }
+            .navigationTitle("Random Images/Quotes")
         }
     }
 }
