@@ -14,9 +14,12 @@ class RandomImageListViewModel: ObservableObject {
     
     /// gets random images and quotes from APIs
     /// - Parameter ids: Not really ids but number of images to fetch from server, will change this later.
-    func getRandomImages(ids: [Int]) async {
+    func getRandomImages(ids: [Int], appendingPreviousImages: Bool = false) async {
         // TODO: - Change this fake ids thing to number of images and cleanup
         let webService = Webservice()
+        if appendingPreviousImages {
+            randomImages = []
+        }
         do {
             try await withThrowingTaskGroup(of: (Int, RandomImage).self) { group in
                 for id in ids {
@@ -35,7 +38,8 @@ class RandomImageListViewModel: ObservableObject {
     }
 }
 
-struct RandomImageViewModel: Identifiable {
+struct RandomImageViewModel: Identifiable, Equatable {
+    
     let id = UUID()
     fileprivate let randomImage: RandomImage
     
@@ -45,5 +49,9 @@ struct RandomImageViewModel: Identifiable {
     
     var quote: String {
         randomImage.quote.content
+    }
+    
+    static func == (lhs: RandomImageViewModel, rhs: RandomImageViewModel) -> Bool {
+        lhs.id == rhs.id
     }
 }

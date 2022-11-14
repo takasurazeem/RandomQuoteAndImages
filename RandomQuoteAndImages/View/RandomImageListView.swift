@@ -22,6 +22,13 @@ struct RandomImageListView: View {
                     }
                     Text(randomImage.quote)
                 }
+                .onAppear {
+                    if randomImage == viewModel.randomImages.last {
+                        Task {
+                            await viewModel.getRandomImages(ids: Array(100...120))
+                        }
+                    }
+                }
             }
             .task {
                 await viewModel.getRandomImages(ids: Array(100...120))
@@ -29,7 +36,7 @@ struct RandomImageListView: View {
             .toolbar {
                 Button {
                     Task {
-                        await viewModel.getRandomImages(ids: Array(100...120))
+                        await viewModel.getRandomImages(ids: Array(100...120), appendingPreviousImages: true)
                     }
                 } label: {
                     Image(systemName: "arrow.clockwise.circle")
