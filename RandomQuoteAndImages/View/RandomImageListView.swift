@@ -11,6 +11,10 @@ struct RandomImageListView: View {
     
     @StateObject private var viewModel = RandomImageListViewModel()
     
+    init() {
+        UILabel.appearance(whenContainedInInstancesOf: [UINavigationBar.self]).adjustsFontSizeToFitWidth = true
+    }
+    
     var body: some View {
         NavigationView {
             List(viewModel.randomImages) { randomImage in
